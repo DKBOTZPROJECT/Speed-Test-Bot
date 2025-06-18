@@ -4,6 +4,9 @@ import speedtest
 import psutil
 import platform
 import shutil
+import socket
+import time
+from datetime import timedelta
 
 API_ID = 10956858
 API_HASH = "cceefd3382b44d4d85be2d83201102b7"
@@ -35,48 +38,86 @@ async def about_command(client, message: Message):
 
 # Speedtest Command
 @app.on_message(filters.command("speedtest") & filters.private)
-async def speed_test(client, message: Message):
-    msg = await message.reply_text("⚡ Running speed test, please wait...")
+async def full_speed_test(client, message: Message):
+    msg = await message.reply_text("⚡ Running full speed and system test, please wait...")
 
     try:
+        # Speedtest
         st = speedtest.Speedtest()
         st.get_best_server()
         download = st.download()
         upload = st.upload()
         server = st.get_best_server()
-
-        # Convert speed to Mbps
         download_mbps = round(download / 10**6, 2)
         upload_mbps = round(upload / 10**6, 2)
 
-        # Disk info
+        # Disk Info
         total, used, free = shutil.disk_usage("/")
-        total_gb = round(total / (1024 ** 3), 2)
-        used_gb = round(used / (1024 ** 3), 2)
-        free_gb = round(free / (1024 ** 3), 2)
+        total_gb = round(total / (1024**3), 2)
+        used_gb = round(used / (1024**3), 2)
+        free_gb = round(free / (1024**3), 2)
+
+        # CPU Info
+        cpu_percent = psutil.cpu_percent(interval=1)
+        cpu_cores = psutil.cpu_count(logical=True)
+        cpu_name = platform.processor()
+
+        # RAM Info
+        ram = psutil.virtual_memory()
+        ram_total = round(ram.total / (1024**3), 2)
+        ram_used = round(ram.used / (1024**3), 2)
+        ram_free = round(ram.available / (1024**3), 2)
+        ram_percent = ram.percent
+
+        # Uptime
+        uptime_seconds = time.time() - psutil.boot_time()
+        uptime_str = str(timedelta(seconds=int(uptime_seconds)))
+
+        # Host Info
+        system = platform.system()
+        release = platform.release()
+        machine = platform.machine()
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
 
         text = f"""
 📡 **Speed Test Result**:
 
-**Server**: {server['host']}
-**Sponsor**: {server['sponsor']}
-**Location**: {server['name']}, {server['country']}
-**Ping**: {server['latency']} ms
+**🌐 Server**: {server['host']}
+**🌍 Location**: {server['name']}, {server['country']}
+**🏢 Sponsor**: {server['sponsor']}
+**📶 Ping**: {server['latency']} ms
 
 ⬇️ **Download**: {download_mbps} Mbps  
 ⬆️ **Upload**: {upload_mbps} Mbps
 
-💾 **Storage**:
+🧠 **CPU Info**:
+• Cores: {cpu_cores}
+• Usage: {cpu_percent}%
+• Name : {cpu_name}
+
+💾 **Disk Info**:
 • Total: {total_gb} GB
 • Used : {used_gb} GB
 • Free : {free_gb} GB
 
-🖥 **System**: {platform.system()} {platform.release()}
-    """
+🧠 **RAM Info**:
+• Total: {ram_total} GB
+• Used : {ram_used} GB
+• Free : {ram_free} GB
+• Usage: {ram_percent}%
+
+🖥 **System Info**:
+• OS     : {system} {release}
+• Machine: {machine}
+• Host   : {hostname}
+• IP     : {ip_address}
+
+⏱ **Uptime**: {uptime_str}
+        """
 
         await msg.edit_text(text)
     except Exception as e:
-        await msg.edit_text(f"❌ Error while running speedtest:\n`{e}`")
-
+        await msg.edit_text(f"❌ Error during speedtest:\n`{e}`")
 # Run the Bot
 app.run()
