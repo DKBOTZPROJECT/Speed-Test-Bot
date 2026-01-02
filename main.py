@@ -24,13 +24,9 @@ async def start(client, message: Message):
 # Help Command
 @app.on_message(filters.command("help") & filters.private)
 async def help_command(client, message: Message):
-    await message.reply_text("""
-🛠 **Help Menu**:
-/start - Welcome message
-/help - Show this help
-/about - About the bot
-/speedtest - Run speed + system test
-""")
+    await message.reply_text("<b>🛠 Help Menu</b>\n\n<b>/start</b> – <i>Start The Bot & Welcome Message</i>\n<b>/help</b> – <i>Show All Available Commands</i>\n<b>/about</b> – <i>Bot Information</i>\n<b>/speedtest</b> – <i>Run Full Speed & System Test</i>\n\n<i>⚠️ Please Wait Patiently During Speed Test.</i>")
+
+
 
 # About Command
 @app.on_message(filters.command("about") & filters.private)
