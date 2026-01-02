@@ -31,7 +31,8 @@ async def help_command(client, message: Message):
 # About Command
 @app.on_message(filters.command("about") & filters.private)
 async def about_command(client, message: Message):
-    await message.reply_text("🤖 This is a demo Telegram bot built using Pyrogram!")
+    await message.reply_text("<b>🤖 About This Bot</b>\n\n<i>This Bot Is Built Using Pyrogram.</i>\n\n⚡ <b>Features:</b>\n• Internet Speed Test\n• System Information\n• Accurate Results\n\n<b>👨‍💻 Developer:</b> <i>DKBOTZ</i>\n<b>🚀 Status:</b> <i>Fast & Stable</i>")
+
 
 
 # Speedtest Command
