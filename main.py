@@ -6,18 +6,20 @@ import platform
 import shutil
 import socket
 import time
+import os
 from datetime import timedelta
 
-API_ID = 10956858
-API_HASH = "cceefd3382b44d4d85be2d83201102b7"
-BOT_TOKEN = "7347629693:AAFG5Sl5_eV-aj_e6JNGnuOA08yhpmvU2PI"
+API_ID = int(os.environ.get("API_ID"))
+API_HASH = os.environ.get("API_HASH")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 app = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
 # Start Command
 @app.on_message(filters.command("start") & filters.private)
 async def start(client, message: Message):
-    await message.reply_text("👋 Hello! I'm your bot.\n\nUse /help to see what I can do!")
+    await message.reply_text("<b>👋 Welcome!</b>\n\n<i>I Am A Powerful Speed Test Bot 🚀</i>\n\n⚡ Test your <b>Internet Speed</b>\n💻 Check <b>System Performance</b>\n📊 Get Accurate <b>Upload / Download / Ping</b>\n\n<b>📌 Use</b> /help <b>To See All Commands</b>")
+
 
 # Help Command
 @app.on_message(filters.command("help") & filters.private)
